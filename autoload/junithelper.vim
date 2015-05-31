@@ -13,7 +13,7 @@ let s:BASE_OPTIONS =
 "" オプション
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " g:junithelper_home
-"   junitheperがインストールされているディデクトリへのパスを設定します。
+"   junithelperがインストールされているディデクトリへのパスを設定します。
 "   example:
 "     let g:junithelper_home = 'C:\Users\user\Download\junithelper'
 "
@@ -46,6 +46,10 @@ let s:BASE_OPTIONS =
 "        -jar %s/junithelper-core-*.jar
 "
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+function! s:SID(funcname) abort
+  let id = matchstr(string(function('s:SID')), '\C\v\<SNR\>\d+_')
+  return function(id . a:funcname)
+endfunction
 
 function! s:isOpen() abort
   return get(g:, 'junithelper_open', 1)
@@ -158,3 +162,9 @@ endfunction
 function! junithelper#execForce4() abort
   call junithelper#execAndOpen('force4', '')
 endfunction
+
+if get(g:, 'JUNITHELPER_TEST_FLAG', 0)
+  function! junithelper#sid(funcname)
+    return s:SID(a:funcname)
+  endfunction
+endif
