@@ -1,0 +1,33 @@
+let s:expect = themis#helper('expect')
+
+function! s:Call(fname, ...)
+  return call(junithelper#sid(a:fname), a:000)
+endfunction
+
+Describe buildCommand
+  Context s:getLinkedPathOpts
+    It given bad 'path' then return bad opts
+      let actual = join([
+      \ '-Djunithelper.skipConfirming=true',
+      \ '-Djunithelper.configProperties=',
+      \ '-Djunithelper.extensionConfigXML=',
+      \ '-jar '], ' ')
+      call s:expect(s:Call('getLinkedPathOpts', 'path')).to_equal(actual)
+    End
+    It given correct path then return correct opts
+      let path = glob(g:junithelper_home . '/core/tools')
+      let prop = glob(path . '/junithelper-config.properties')
+      let xml = glob(path . '/junithelper-extension.xml')
+      let jar = glob(path . '/junithelper-core-1.2.jar')
+      let actual = join([
+      \ '-Djunithelper.skipConfirming=true',
+      \ '-Djunithelper.configProperties=' . prop,
+      \ '-Djunithelper.extensionConfigXML=' . xml,
+      \ '-jar ' . jar], ' ')
+      call s:expect(prop).not.to_equal('')
+      call s:expect(xml).not.to_equal('')
+      call s:expect(jar).not.to_equal('')
+      call s:expect(s:Call('getLinkedPathOpts', path)).to_equal(actual)
+    End
+  End
+End

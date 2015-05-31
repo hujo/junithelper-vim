@@ -1,0 +1,55 @@
+let s:expect = themis#helper('expect')
+let s:junithelper_home = g:junithelper_home
+let s:dir = expand('<sfile>:h')
+
+function! s:Call(fname, ...)
+  return call(junithelper#sid(a:fname), a:000)
+endfunction
+
+Describe Options
+  Context junithelper_open
+    It not exists then s:isOpen return 1
+      unlet! g:junithelper_open
+      call s:expect(s:Call('isOpen')).to_equal(1)
+    End
+    It set 1 then s:isOpen return 1
+      let g:junithelper_open = 1
+      call s:expect(s:Call('isOpen')).to_equal(1)
+    End
+    It set 0 then s:isOpen return 0
+      let g:junithelper_open = 0
+      call s:expect(s:Call('isOpen')).to_equal(0)
+    End
+  End
+
+  Context junithelper_open_command
+    It not exists then return 'split'
+      unlet! g:junithelper_open_command
+      call s:expect(s:Call('openCmd')).to_equal('split')
+    End
+    It set 'vsplit' then return 'vsplit'
+      let g:junithelper_open_command = 'vsplit'
+      call s:expect(s:Call('openCmd')).to_equal('vsplit')
+    End
+  End
+
+  Context junithelper_home
+    It not exists then return ''
+      unlet! g:junithelper_home
+      call s:expect(s:Call('getJunitHelperHome')).to_equal('')
+    End
+    It set not exists dir then return ''
+      let g:junithelper_home = '.\notExistsDir'
+      call s:expect(s:Call('getJunitHelperHome')).to_equal('')
+    End
+    It set exists dir but not files then return ''
+      let g:junithelper_home = glob(s:dir)
+      call s:expect(g:junithelper_home).not.to_equal('')
+      call s:expect(s:Call('getJunitHelperHome')).to_equal('')
+    End
+    It set exists dir and exists files then return not ''
+      let g:junithelper_home = s:junithelper_home
+      call s:expect(s:Call('getJunitHelperHome')).not.to_equal('')
+    End
+  End
+End

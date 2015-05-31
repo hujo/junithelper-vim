@@ -1,0 +1,5 @@
+let s:dir = expand('<sfile>:p:h')
+let g:junithelper_home = glob(s:dir . '/fakeJunitHelper')
+let g:loaded_junithelper = 0
+let g:JUNITHELPER_TEST_FLAG = 1
+call themis#option('recursive', 1)
