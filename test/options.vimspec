@@ -23,31 +23,31 @@ Describe Options
   End
 
   Context junithelper_open_command
-    It not exists then return 'split'
+    It not exists then s:openCmd return split'
       unlet! g:junithelper_open_command
       call s:expect(s:Call('openCmd')).to_equal('split')
     End
-    It set 'vsplit' then return 'vsplit'
+    It set 'vsplit' then s:openCmd return 'vsplit'
       let g:junithelper_open_command = 'vsplit'
       call s:expect(s:Call('openCmd')).to_equal('vsplit')
     End
   End
 
   Context junithelper_home
-    It not exists then return ''
+    It not exists then s:getJunitHelperHome return ''
       unlet! g:junithelper_home
       call s:expect(s:Call('getJunitHelperHome')).to_equal('')
     End
-    It set not exists dir then return ''
+    It set not exists dir then s:getJunitHelperHome return ''
       let g:junithelper_home = '.\notExistsDir'
       call s:expect(s:Call('getJunitHelperHome')).to_equal('')
     End
-    It set exists dir but not files then return ''
+    It set exists dir but not files then s:getJunitHelperHome return ''
       let g:junithelper_home = glob(s:dir)
       call s:expect(g:junithelper_home).not.to_equal('')
       call s:expect(s:Call('getJunitHelperHome')).to_equal('')
     End
-    It set exists dir and exists files then return not ''
+    It set exists dir and exists files then s:getJunitHelperHome return not ''
       let g:junithelper_home = s:junithelper_home
       call s:expect(s:Call('getJunitHelperHome')).not.to_equal('')
     End

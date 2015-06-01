@@ -1,33 +1,67 @@
 let s:expect = themis#helper('expect')
+let s:junithelper_home = g:junithelper_home
 
 function! s:Call(fname, ...)
   return call(junithelper#sid(a:fname), a:000)
 endfunction
 
+function! s:getBuildCmdTemplate()
+    return join([
+    \ '-Djunithelper.skipConfirming=true',
+    \ '-Djunithelper.configProperties=%s',
+    \ '-Djunithelper.extensionConfigXML=%s',
+    \ '-jar %s'], ' ')
+endfunction
+
+function! s:getBuildCmdFiles(path)
+    let prop = glob(a:path . '/junithelper-config.properties')
+    let xml = glob(a:path . '/junithelper-extension.xml')
+    let jar = glob(a:path . '/junithelper-core-1.2.jar')
+    call s:expect(prop).not.to_equal('')
+    call s:expect(xml).not.to_equal('')
+    call s:expect(jar).not.to_equal('')
+  return [prop, xml, jar]
+endfunction
+
+function! s:actualBuildCmdOps(path)
+    let [prop, xml, jar] = s:getBuildCmdFiles(a:path)
+    return printf(s:getBuildCmdTemplate(), prop, xml, jar)
+endfunction
+
 Describe buildCommand
+  Before each
+    let g:junithelper_home = s:junithelper_home
+  End
   Context s:getLinkedPathOpts
     It given bad 'path' then return bad opts
-      let actual = join([
-      \ '-Djunithelper.skipConfirming=true',
-      \ '-Djunithelper.configProperties=',
-      \ '-Djunithelper.extensionConfigXML=',
-      \ '-jar '], ' ')
+      let actual = printf(s:getBuildCmdTemplate(), '', '', '')
       call s:expect(s:Call('getLinkedPathOpts', 'path')).to_equal(actual)
     End
-    It given correct path then return correct opts
+    It given right path then return right opts
       let path = glob(g:junithelper_home . '/core/tools')
-      let prop = glob(path . '/junithelper-config.properties')
-      let xml = glob(path . '/junithelper-extension.xml')
-      let jar = glob(path . '/junithelper-core-1.2.jar')
-      let actual = join([
-      \ '-Djunithelper.skipConfirming=true',
-      \ '-Djunithelper.configProperties=' . prop,
-      \ '-Djunithelper.extensionConfigXML=' . xml,
-      \ '-jar ' . jar], ' ')
-      call s:expect(prop).not.to_equal('')
-      call s:expect(xml).not.to_equal('')
-      call s:expect(jar).not.to_equal('')
-      call s:expect(s:Call('getLinkedPathOpts', path)).to_equal(actual)
+      let expected = s:Call('getLinkedPathOpts', path)
+      let actual = s:actualBuildCmdOps(path)
+      call s:expect(expected).to_equal(actual)
+    End
+  End
+  Context s:buildCmd
+    It given '' then s:buildCmd return ''
+      let expected = s:Call('buildCmd', '')
+      let actual = ''
+      call s:expect(expected).to_equal(actual)
+    End
+    It g:junithelper_home is '' then s:buildCmd('arg') return ''
+      let g:junithelper_home = ''
+      let expected = s:Call('buildCmd', 'arg')
+      let actual = ''
+      call s:expect(expected).to_equal(actual)
+    End
+    It g:junithelper_home is correct then s:buildCmd return correct
+      let arg = 'make'
+      let path = glob(g:junithelper_home . '/core/tools')
+      let expected = s:Call('buildCmd', arg)
+      let actual = 'java ' . s:actualBuildCmdOps(path) . ' ' . arg
+      call s:expect(expected).to_equal(actual)
     End
   End
 End
