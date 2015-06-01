@@ -46,11 +46,6 @@ let s:BASE_OPTIONS =
 "        -jar %s/junithelper-core-*.jar
 "
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-function! s:SID(funcname) abort
-  let id = matchstr(string(function('s:SID')), '\C\v\<SNR\>\d+_')
-  return function(id . a:funcname)
-endfunction
-
 function! s:isOpen() abort
   return get(g:, 'junithelper_open', 1)
 endfunction
@@ -164,7 +159,12 @@ function! junithelper#execForce4() abort
 endfunction
 
 if get(g:, 'JUNITHELPER_TEST_FLAG', 0)
+  function! s:SID()
+    let s:_SID = matchstr(expand('<sfile>'), '\v\C\<SNR\>\d+_')
+  endfunction
+  call s:SID()
+
   function! junithelper#sid(funcname)
-    return s:SID(a:funcname)
+    return s:_SID . a:funcname
   endfunction
 endif
