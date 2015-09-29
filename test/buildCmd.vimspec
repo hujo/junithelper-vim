@@ -17,9 +17,9 @@ function! s:getBuildCmdFiles(path)
     let prop = glob(a:path . '/junithelper-config.properties')
     let xml = glob(a:path . '/junithelper-extension.xml')
     let jar = glob(a:path . '/junithelper-core-1.2.jar')
-    call s:expect('').not.to_equal(prop)
-    call s:expect('').not.to_equal(xml)
-    call s:expect('').not.to_equal(jar)
+    call s:expect(prop).not.to_equal('')
+    call s:expect(xml).not.to_equal('')
+    call s:expect(jar).not.to_equal('')
   return [prop, xml, jar]
 endfunction
 
@@ -36,29 +36,29 @@ Describe buildCommand
     It given bad 'path' then return bad opts
       let expected = printf(s:getBuildCmdTemplate(), '', '', '')
       let actual = s:Call('getLinkedPathOpts', 'path')
-      call s:expect(expected).to_equal(actual)
+      call s:expect(actual).to_equal(expected)
     End
     It given right path then return right opts
       let path = glob(g:junithelper_home . '/core/tools')
       let actual = s:Call('getLinkedPathOpts', path)
       let expected = s:expectedBuildCmdOps(path)
-      call s:expect(expected).to_equal(actual)
+      call s:expect(actual).to_equal(expected)
     End
   End
   Context s:buildCmd
     It given '' then s:buildCmd return ''
-      call s:expect('').to_equal(s:Call('buildCmd', ''))
+      call s:expect(s:Call('buildCmd', '')).to_equal('')
     End
     It g:junithelper_home is '' then s:buildCmd('arg') return ''
       let g:junithelper_home = ''
-      call s:expect('').to_equal(s:Call('buildCmd', 'arg'))
+      call s:expect(s:Call('buildCmd', 'arg')).to_equal('')
     End
     It g:junithelper_home is correct then s:buildCmd return correct
       let arg = 'make'
       let path = glob(g:junithelper_home . '/core/tools')
       let expected = 'java ' . s:expectedBuildCmdOps(path) . ' ' . arg
       let actual = s:Call('buildCmd', arg)
-      call s:expect(expected).to_equal(actual)
+      call s:expect(actual).to_equal(expected)
     End
   End
 End

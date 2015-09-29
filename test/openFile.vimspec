@@ -16,10 +16,10 @@ Describe OpenFile
   End
   Context s:isTestFile
     It given MainTest.java then return 1
-      call s:expect(1).to_equal(s:Call('isTestFile', 'MainTest.java'))
+      call s:expect(s:Call('isTestFile', 'MainTest.java')).to_equal(1)
     End
     It given MainTestHelper.java then return 0
-      call s:expect(0).to_equal(s:Call('isTestFile', 'MainTestHelper.java'))
+      call s:expect(s:Call('isTestFile', 'MainTestHelper.java')).to_equal(0)
     End
   End
 
@@ -27,35 +27,35 @@ Describe OpenFile
     Context given (make, MainTest.java)
       It MainTest.java not exists then return ''
         let fname = 'MainTest.java'
-        call s:expect('').to_equal(s:Call('escapedFnameWithCmd', 'make', fname))
+        call s:expect(s:Call('escapedFnameWithCmd', 'make', fname)).to_equal('')
       End
       It MainTest.java exists then return ''
         let dir = glob(g:JUNITHELPER_JAVASRCDIR . '/test/java')
-        call s:expect('').not.to_equal(dir)
+        call s:expect(dir).not.to_equal('')
 
         lcd `=dir`
         let fname = glob('MainTest.java')
-        call s:expect('').not.to_equal(fname)
+        call s:expect(fname).not.to_equal('')
 
-        call s:expect('').to_equal(s:Call('escapedFnameWithCmd', 'make', fname))
+        call s:expect(s:Call('escapedFnameWithCmd', 'make', fname)).to_equal('')
       End
     End
     Context given (make, Main.java)
       It Main.java not exists then return ''
         let fname = 'Main.java'
-        call s:expect('').to_equal(s:Call('escapedFnameWithCmd', 'make', fname))
+        call s:expect(s:Call('escapedFnameWithCmd', 'make', fname)).to_equal('')
       End
       It Main.java exists then return 'make ' . shellescape(fileName)
         let dir = glob(g:JUNITHELPER_JAVASRCDIR . '/main/java')
-        call s:expect('').not.to_equal(dir)
+        call s:expect(dir).not.to_equal('')
 
         lcd `=dir`
         let fname = glob('Main.java')
-        call s:expect('').not.to_equal(fname)
+        call s:expect(fname).not.to_equal('')
 
         let expected = 'make ' . shellescape(fname)
         let actual = s:Call('escapedFnameWithCmd', 'make', fname)
-        call s:expect(expected).to_equal(actual)
+        call s:expect(actual).to_equal(expected)
       End
     End
   End

@@ -2,9 +2,9 @@ let s:expect = themis#helper('expect')
 
 Describe loaded_junithelper set 1
   It JunitHelper is not loaded
-    call s:expect(0).to_equal(exists(':JunitHelper'))
+    call s:expect(exists(':JunitHelper')).to_equal(0)
   End
   It JunitHelperMake is not loaded
-    call s:expect(0).to_equal(exists(':JunitHelperMake'))
+    call s:expect(exists(':JunitHelperMake')).to_equal(0)
   End
 End
