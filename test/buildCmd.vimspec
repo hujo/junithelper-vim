@@ -17,13 +17,13 @@ function! s:getBuildCmdFiles(path)
     let prop = glob(a:path . '/junithelper-config.properties')
     let xml = glob(a:path . '/junithelper-extension.xml')
     let jar = glob(a:path . '/junithelper-core-1.2.jar')
-    call s:expect(prop).not.to_equal('')
-    call s:expect(xml).not.to_equal('')
-    call s:expect(jar).not.to_equal('')
+    call s:expect('').not.to_equal(prop)
+    call s:expect('').not.to_equal(xml)
+    call s:expect('').not.to_equal(jar)
   return [prop, xml, jar]
 endfunction
 
-function! s:actualBuildCmdOps(path)
+function! s:expectedBuildCmdOps(path)
     let [prop, xml, jar] = s:getBuildCmdFiles(a:path)
     return printf(s:getBuildCmdTemplate(), prop, xml, jar)
 endfunction
@@ -34,33 +34,30 @@ Describe buildCommand
   End
   Context s:getLinkedPathOpts
     It given bad 'path' then return bad opts
-      let actual = printf(s:getBuildCmdTemplate(), '', '', '')
-      call s:expect(s:Call('getLinkedPathOpts', 'path')).to_equal(actual)
+      let expected = printf(s:getBuildCmdTemplate(), '', '', '')
+      let actual = s:Call('getLinkedPathOpts', 'path')
+      call s:expect(expected).to_equal(actual)
     End
     It given right path then return right opts
       let path = glob(g:junithelper_home . '/core/tools')
-      let expected = s:Call('getLinkedPathOpts', path)
-      let actual = s:actualBuildCmdOps(path)
+      let actual = s:Call('getLinkedPathOpts', path)
+      let expected = s:expectedBuildCmdOps(path)
       call s:expect(expected).to_equal(actual)
     End
   End
   Context s:buildCmd
     It given '' then s:buildCmd return ''
-      let expected = s:Call('buildCmd', '')
-      let actual = ''
-      call s:expect(expected).to_equal(actual)
+      call s:expect('').to_equal(s:Call('buildCmd', ''))
     End
     It g:junithelper_home is '' then s:buildCmd('arg') return ''
       let g:junithelper_home = ''
-      let expected = s:Call('buildCmd', 'arg')
-      let actual = ''
-      call s:expect(expected).to_equal(actual)
+      call s:expect('').to_equal(s:Call('buildCmd', 'arg'))
     End
     It g:junithelper_home is correct then s:buildCmd return correct
       let arg = 'make'
       let path = glob(g:junithelper_home . '/core/tools')
-      let expected = s:Call('buildCmd', arg)
-      let actual = 'java ' . s:actualBuildCmdOps(path) . ' ' . arg
+      let expected = 'java ' . s:expectedBuildCmdOps(path) . ' ' . arg
+      let actual = s:Call('buildCmd', arg)
       call s:expect(expected).to_equal(actual)
     End
   End

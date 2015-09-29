@@ -10,46 +10,46 @@ Describe Options
   Context junithelper_open
     It not exists then s:isOpen return 1
       unlet! g:junithelper_open
-      call s:expect(s:Call('isOpen')).to_equal(1)
+      call s:expect(1).to_equal(s:Call('isOpen'))
     End
     It set 1 then s:isOpen return 1
       let g:junithelper_open = 1
-      call s:expect(s:Call('isOpen')).to_equal(1)
+      call s:expect(1).to_equal(s:Call('isOpen'))
     End
     It set 0 then s:isOpen return 0
       let g:junithelper_open = 0
-      call s:expect(s:Call('isOpen')).to_equal(0)
+      call s:expect(0).to_equal(s:Call('isOpen'))
     End
   End
 
   Context junithelper_open_command
     It not exists then s:openCmd return split'
       unlet! g:junithelper_open_command
-      call s:expect(s:Call('openCmd')).to_equal('split')
+      call s:expect('split').to_equal(s:Call('openCmd'))
     End
     It set 'vsplit' then s:openCmd return 'vsplit'
       let g:junithelper_open_command = 'vsplit'
-      call s:expect(s:Call('openCmd')).to_equal('vsplit')
+      call s:expect('vsplit').to_equal(s:Call('openCmd'))
     End
   End
 
   Context junithelper_home
     It not exists then s:getJunitHelperHome return ''
       unlet! g:junithelper_home
-      call s:expect(s:Call('getJunitHelperHome')).to_equal('')
+      call s:expect('').to_equal(s:Call('getJunitHelperHome'))
     End
     It set not exists dir then s:getJunitHelperHome return ''
       let g:junithelper_home = '.\notExistsDir'
-      call s:expect(s:Call('getJunitHelperHome')).to_equal('')
+      call s:expect('').to_equal(s:Call('getJunitHelperHome'))
     End
     It set exists dir but not files then s:getJunitHelperHome return ''
       let g:junithelper_home = glob(s:dir)
-      call s:expect(g:junithelper_home).not.to_equal('')
-      call s:expect(s:Call('getJunitHelperHome')).to_equal('')
+      call s:expect('').not.to_equal(g:junithelper_home)
+      call s:expect('').to_equal(s:Call('getJunitHelperHome'))
     End
     It set exists dir and exists files then s:getJunitHelperHome return not ''
       let g:junithelper_home = s:junithelper_home
-      call s:expect(s:Call('getJunitHelperHome')).not.to_equal('')
+      call s:expect('').not.to_equal(s:Call('getJunitHelperHome'))
     End
   End
 End

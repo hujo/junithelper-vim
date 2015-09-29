@@ -16,14 +16,10 @@ Describe OpenFile
   End
   Context s:isTestFile
     It given MainTest.java then return 1
-      let expected = s:Call('isTestFile', 'MainTest.java')
-      let actual = 1
-      call s:expect(expected).to_equal(actual)
+      call s:expect(1).to_equal(s:Call('isTestFile', 'MainTest.java'))
     End
     It given MainTestHelper.java then return 0
-      let expected = s:Call('isTestFile', 'MainTestHelper.java')
-      let actual = 0
-      call s:expect(expected).to_equal(actual)
+      call s:expect(0).to_equal(s:Call('isTestFile', 'MainTestHelper.java'))
     End
   End
 
@@ -31,40 +27,34 @@ Describe OpenFile
     Context given (make, MainTest.java)
       It MainTest.java not exists then return ''
         let fname = 'MainTest.java'
-        let expected = s:Call('escapedFnameWithCmd', 'make', fname)
-        let actual = ''
-        call s:expect(expected).to_equal(actual)
+        call s:expect('').to_equal(s:Call('escapedFnameWithCmd', 'make', fname))
       End
       It MainTest.java exists then return ''
         let dir = glob(g:JUNITHELPER_JAVASRCDIR . '/test/java')
-        call s:expect(dir).not.to_equal('')
+        call s:expect('').not.to_equal(dir)
 
         lcd `=dir`
         let fname = glob('MainTest.java')
-        call s:expect(fname).not.to_equal('')
+        call s:expect('').not.to_equal(fname)
 
-        let expected = s:Call('escapedFnameWithCmd', 'make', fname)
-        let actual = ''
-        call s:expect(expected).to_equal(actual)
+        call s:expect('').to_equal(s:Call('escapedFnameWithCmd', 'make', fname))
       End
     End
     Context given (make, Main.java)
       It Main.java not exists then return ''
         let fname = 'Main.java'
-        let expected = s:Call('escapedFnameWithCmd', 'make', fname)
-        let actual = ''
-        call s:expect(expected).to_equal(actual)
+        call s:expect('').to_equal(s:Call('escapedFnameWithCmd', 'make', fname))
       End
       It Main.java exists then return 'make ' . shellescape(fileName)
         let dir = glob(g:JUNITHELPER_JAVASRCDIR . '/main/java')
-        call s:expect(dir).not.to_equal('')
+        call s:expect('').not.to_equal(dir)
 
         lcd `=dir`
         let fname = glob('Main.java')
-        call s:expect(fname).not.to_equal('')
+        call s:expect('').not.to_equal(fname)
 
-        let expected = s:Call('escapedFnameWithCmd', 'make', fname)
-        let actual = 'make ' . shellescape(fname)
+        let expected = 'make ' . shellescape(fname)
+        let actual = s:Call('escapedFnameWithCmd', 'make', fname)
         call s:expect(expected).to_equal(actual)
       End
     End
